@@ -45,16 +45,12 @@ class Cloudinary_WP_Integration {
 
 		// Try mirroring the image on Cloudinary, and buld custom metadata from the response.
 		if ( $data = $this->handle_upload( $filepath ) ) {
-			if ( isset( $data['secure_url'] ) ) {
-
-			}
-
 			$metadata['cloudinary_data'] = array(
-				'public_id'	=> $data['public_id'],
-				'width'			=> $data['width'],
-				'height'		 => $data['height'],
-				'bytes'			=> $data['bytes'],
-				'url'				=> $data['url'],
+				'public_id'  => $data['public_id'],
+				'width'      => $data['width'],
+				'height'     => $data['height'],
+				'bytes'      => $data['bytes'],
+				'url'        => $data['url'],
 				'secure_url' => $data['secure_url'],
 			);
 

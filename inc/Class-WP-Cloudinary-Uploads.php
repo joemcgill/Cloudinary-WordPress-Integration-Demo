@@ -205,20 +205,10 @@ class Cloudinary_WP_Integration {
 		}
 
 		if ( isset( $metadata['cloudinary_data']['sizes'] ) ) {
-			$sources = array();
-
-			foreach( $metadata['cloudinary_data']['sizes'] as $s ) {
-				$sources[ $s['width'] ] = array(
-					'url'        => $s['secure_url'],
-					'descriptor' => 'w',
-					'value'      => $s['width'],
-				);
-			}
-
 			$srcset = '';
 
-			foreach ( $sources as $source ) {
-				$srcset .= str_replace( ' ', '%20', $source['url'] ) . ' ' . $source['value'] . $source['descriptor'] . ', ';
+			foreach( $metadata['cloudinary_data']['sizes'] as $s ) {
+				$srcset .= $s['secure_url'] . ' ' . $s['width'] . 'w, ';
 			}
 
 			if ( ! empty( $srcset ) ) {
@@ -281,25 +271,17 @@ class Cloudinary_WP_Integration {
 				$width  = preg_match( '/ width="([0-9]+)"/',  $image, $match_width  ) ? (int) $match_width[1]  : 0;
 				$height = preg_match( '/ height="([0-9]+)"/', $image, $match_height ) ? (int) $match_height[1] : 0;
 
-				foreach( $image_meta['cloudinary_data']['sizes'] as $s ) {
-					$sources[ $s['width'] ] = array(
-						'url'        => $s['secure_url'],
-						'descriptor' => 'w',
-						'value'      => $s['width'],
-					);
-				}
-
 				$srcset = '';
 
-				foreach ( $sources as $source ) {
-					$srcset .= str_replace( ' ', '%20', $source['url'] ) . ' ' . $source['value'] . $source['descriptor'] . ', ';
+				foreach( $image_meta['cloudinary_data']['sizes'] as $s ) {
+					$srcset .= $s['secure_url'] . ' ' . $s['width'] .  'w, ';
 				}
 
 				if ( ! empty( $srcset ) ) {
 					$srcset = rtrim( $srcset, ', ' );
 					$sizes = sprintf( '(max-width: %1$dpx) 100vw, %1$dpx', $width );
 
-					// Convert named size to dimension array to workaround TwentySixteen bug.
+					// Convert named size to dimension array.
 					$size = array($width, $height);
 					$sizes = apply_filters( 'wp_calculate_image_sizes', $sizes, $size, $src, $image_meta, $attachment_id );
 				}
@@ -310,5 +292,4 @@ class Cloudinary_WP_Integration {
 
 		return $image;
 	}
-
 }

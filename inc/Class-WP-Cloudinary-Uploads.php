@@ -22,7 +22,7 @@ class Cloudinary_WP_Integration {
 	}
 
 	public function register_hooks() {
-		add_filter( 'wp_generate_attachment_metadata', array( $this, 'generate_cloudinary_data' ), 10, 2 );
+		add_filter( 'wp_generate_attachment_metadata', array( $this, 'generate_cloudinary_data' ) );
 		add_filter( 'wp_get_attachment_url', array( $this, 'get_attachment_url' ), 10, 2 );
 		add_filter( 'image_downsize', array( $this, 'image_downsize' ), 10, 3 );
 
@@ -34,7 +34,7 @@ class Cloudinary_WP_Integration {
 		add_filter( 'the_content', array( $this, 'make_content_images_responsive',  ) );
 	}
 
-	public function generate_cloudinary_data( $metadata, $id ) {
+	public function generate_cloudinary_data( $metadata ) {
 		// Bail early if we don't have a file path to work with.
 		if ( ! isset( $metadata['file'] ) ) {
 			return $metadata;
@@ -43,7 +43,7 @@ class Cloudinary_WP_Integration {
 		$uploads = wp_get_upload_dir();
 		$filepath = trailingslashit( $uploads['basedir'] ) . $metadata['file'];
 
-		// Try mirroring the image on Cloudinary, and buld custom metadata from the response.
+		// Mirror the image on Cloudinary, and buld custom metadata from the response.
 		if ( $data = $this->handle_upload( $filepath ) ) {
 			$metadata['cloudinary_data'] = array(
 				'public_id'  => $data['public_id'],

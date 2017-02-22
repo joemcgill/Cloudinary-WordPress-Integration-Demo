@@ -26,7 +26,7 @@ require 'lib/cloudinary_php/src/Uploader.php';
 require 'lib/cloudinary_php/src/Api.php';
 
 // Load integration.
-require 'inc/class-wp-cloudinary-uploads.php';
+require 'inc/class-wp-cloudinary-uploader.php';
 
 \Cloudinary::config( array(
 	'cloud_name' => CLD_CLOUD_NAME,

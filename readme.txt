@@ -7,16 +7,7 @@ Stable tag: 0.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Here is a short description of the plugin.  This should be no more than 150 characters.  No markup here.
-
-== Description ==
-
-To come
-
-== Installation ==
-
-To come
-
+This plugin is an experiment to demonstrate integrating <a href="http://cloudinary.com/">Cloudinary</a> with WordPress for generating responsive images. For more, read <a href="https://css-tricks.com/responsive-images-wordpress-cloudinary-part-1/">the related article at CSS-Tricks</a>.
 
 == Changelog ==
 

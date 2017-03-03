@@ -57,14 +57,14 @@ class Cloudinary_WP_Integration {
 
 		// Mirror the image on Cloudinary, and buld custom metadata from the response.
 		if ( $data = $this->handle_upload( $filepath ) ) {
-			$metadata['cloudinary_data'] = array(
-				'public_id'  => $data['public_id'],
-				'width'      => $data['width'],
-				'height'     => $data['height'],
-				'bytes'      => $data['bytes'],
-				'url'        => $data['url'],
-				'secure_url' => $data['secure_url'],
-			);
+			$metadata['cloudinary_data'] = array_intersect_key( $data, array_flip( array(
+				'public_id',
+				'width',
+				'height',
+				'bytes',
+				'url',
+				'secure_url',
+			) ) );
 
 			foreach ( $data['responsive_breakpoints'][0]['breakpoints'] as $size ) {
 				$metadata['cloudinary_data']['sizes'][ $size['width'] ] = $size;

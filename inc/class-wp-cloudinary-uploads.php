@@ -5,6 +5,8 @@ class Cloudinary_WP_Integration {
 	private static $instance;
 
 	/**
+	 * Singleton.
+	 *
 	 * @return Cloudinary_WP_Integration
 	 */
 	public static function get_instance() {
@@ -199,23 +201,29 @@ class Cloudinary_WP_Integration {
 
 			// Set the width.
 			if ( isset( $_wp_additional_image_sizes[ $s ]['width'] ) ) {
-				$sizes[ $s ]['width'] = intval( $_wp_additional_image_sizes[ $s ]['width'] ); // For theme-added sizes
+				// For theme-added sizes.
+				$sizes[ $s ]['width'] = intval( $_wp_additional_image_sizes[ $s ]['width'] );
 			} else {
-				$sizes[ $s ]['width'] = get_option( "{$s}_size_w" ); // For default sizes set in options
+				// For default sizes set in options.
+				$sizes[ $s ]['width'] = get_option( "{$s}_size_w" );
 			}
 
 			// Set the height.
 			if ( isset( $_wp_additional_image_sizes[ $s ]['height'] ) ) {
-				$sizes[ $s ]['height'] = intval( $_wp_additional_image_sizes[ $s ]['height'] ); // For theme-added sizes
+				// For theme-added sizes.
+				$sizes[ $s ]['height'] = intval( $_wp_additional_image_sizes[ $s ]['height'] );
 			} else {
-				$sizes[ $s ]['height'] = get_option( "{$s}_size_h" ); // For default sizes set in options
+				// For default sizes set in options.
+				$sizes[ $s ]['height'] = get_option( "{$s}_size_h" );
 			}
 
 			// Set the crop value.
 			if ( isset( $_wp_additional_image_sizes[ $s ]['crop'] ) ) {
-				$sizes[ $s ]['crop'] = $_wp_additional_image_sizes[ $s ]['crop']; // For theme-added sizes
+				// For theme-added sizes.
+				$sizes[ $s ]['crop'] = $_wp_additional_image_sizes[ $s ]['crop'];
 			} else {
-				$sizes[ $s ]['crop'] = get_option( "{$s}_crop" ); // For default sizes set in options
+				// For default sizes set in options.
+				$sizes[ $s ]['crop'] = get_option( "{$s}_crop" );
 			}
 		}
 
@@ -276,7 +284,7 @@ class Cloudinary_WP_Integration {
 	/**
 	 * Filter images in post content to use Cloudinary URLs.
 	 *
-	 * @param string Post content.
+	 * @param string $content Post content.
 	 * @return string Fitlered content.
 	 */
 	public function make_content_images_responsive( $content ) {
@@ -289,7 +297,6 @@ class Cloudinary_WP_Integration {
 		foreach ( $matches[0] as $image ) {
 			if ( false === strpos( $image, ' srcset=' ) && preg_match( '/wp-image-([0-9]+)/i', $image, $class_id ) &&
 				( $attachment_id = absint( $class_id[1] ) ) ) {
-
 				/*
 				 * If exactly the same image tag is used more than once, overwrite it.
 				 * All identical tags will be replaced later with 'str_replace()'.
@@ -323,14 +330,14 @@ class Cloudinary_WP_Integration {
 	 *
 	 * @param string $image          An HTML img element.
 	 * @param array  $image_meta     Attachment metadata for the image.
-	 * @param int    $$attachment_id Image attachment ID.
+	 * @param int    $attachment_id Image attachment ID.
 	 * @return string Converted 'img' element with 'srcset' and 'sizes' attributes added.
 	 */
 	public function add_srcset_and_sizes( $image, $image_meta, $attachment_id ) {
 		if ( isset( $image_meta['cloudinary_data']['sizes'] ) ) {
 			$src = preg_match( '/src="([^"]+)"/', $image, $match_src ) ? $match_src[1] : '';
 			// See if our filename is in the URL string.
-			if ( false !== strpos( $src, pathinfo ( $image_meta['file'], PATHINFO_FILENAME ) ) && false === strpos( $image, 'c_lfill' ) ) {
+			if ( false !== strpos( $src, pathinfo( $image_meta['file'], PATHINFO_FILENAME ) ) && false === strpos( $image, 'c_lfill' ) ) {
 				$width  = preg_match( '/ width="([0-9]+)"/',  $image, $match_width ) ? (int) $match_width[1]  : 0;
 				$height = preg_match( '/ height="([0-9]+)"/', $image, $match_height ) ? (int) $match_height[1] : 0;
 
@@ -349,7 +356,7 @@ class Cloudinary_WP_Integration {
 					$sizes = apply_filters( 'wp_calculate_image_sizes', $sizes, $size, $src, $image_meta, $attachment_id );
 				}
 
-				$image = preg_replace( '/src="([^"]+)"/', 'src="$1" srcset="' . $srcset . '" sizes="' . $sizes .'"', $image );
+				$image = preg_replace( '/src="([^"]+)"/', 'src="$1" srcset="' . $srcset . '" sizes="' . $sizes . '"', $image );
 			}
 		}
 

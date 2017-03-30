@@ -29,8 +29,8 @@ class Cloudinary_WP_Integration {
 	 */
 	public function register_hooks() {
 		add_filter( 'wp_generate_attachment_metadata', array( $this, 'generate_cloudinary_data' ) );
-		add_filter( 'wp_get_attachment_url', array( $this, 'get_attachment_url' ), 10, 2 );
-		add_filter( 'image_downsize', array( $this, 'image_downsize' ), 10, 3 );
+		// add_filter( 'wp_get_attachment_url', array( $this, 'get_attachment_url' ), 10, 2 );
+		// add_filter( 'image_downsize', array( $this, 'image_downsize' ), 10, 3 );
 
 		// Filter images created on the fly.
 		add_filter( 'wp_get_attachment_image_attributes', array( $this, 'wp_get_attachment_image_attributes' ), 10, 3 );
@@ -234,6 +234,8 @@ class Cloudinary_WP_Integration {
 	public function wp_get_attachment_image_attributes( $attr, $attachment, $size ) {
 		$metadata = wp_get_attachment_metadata( $attachment->ID );
 
+		$width = $height = false;
+
 		if ( is_string( $size ) ) {
 			if ( 'full' === $size ) {
 				$width = $attachment['width'];
@@ -326,16 +328,16 @@ class Cloudinary_WP_Integration {
 	 */
 	public function add_srcset_and_sizes( $image, $image_meta, $attachment_id ) {
 		if ( isset( $image_meta['cloudinary_data']['sizes'] ) ) {
+			$src = preg_match( '/src="([^"]+)"/', $image, $match_src ) ? $match_src[1] : '';
 			// See if our filename is in the URL string.
-			if ( false !== strpos( $image, wp_basename( $image_meta['cloudinary_data']['url'] ) ) && false === strpos( $image, 'c_lfill' ) ) {
-				$src = preg_match( '/src="([^"]+)"/', $image, $match_src ) ? $match_src[1] : '';
+			if ( false !== strpos( $src, pathinfo ( $image_meta['file'], PATHINFO_FILENAME ) ) && false === strpos( $image, 'c_lfill' ) ) {
 				$width  = preg_match( '/ width="([0-9]+)"/',  $image, $match_width ) ? (int) $match_width[1]  : 0;
 				$height = preg_match( '/ height="([0-9]+)"/', $image, $match_height ) ? (int) $match_height[1] : 0;
 
 				$srcset = '';
 
 				foreach ( $image_meta['cloudinary_data']['sizes'] as $s ) {
-					$srcset .= $s['secure_url'] . ' ' . $s['width'] .  'w, ';
+					$srcset .= $s['secure_url'] . ' ' . $s['width'] . 'w, ';
 				}
 
 				if ( ! empty( $srcset ) ) {
